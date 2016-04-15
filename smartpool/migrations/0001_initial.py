@@ -14,8 +14,10 @@ class Migration(migrations.Migration):
             name='ActivePoolers',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('src', models.DecimalField(max_digits=10, decimal_places=5)),
-                ('dest', models.DecimalField(max_digits=10, decimal_places=5)),
+                ('src_lat', models.DecimalField(max_digits=10, decimal_places=5)),
+                ('src_lng', models.DecimalField(max_digits=10, decimal_places=5)),
+                ('dest_lat', models.DecimalField(max_digits=10, decimal_places=5)),
+                ('dest_lng', models.DecimalField(max_digits=10, decimal_places=5)),
                 ('start_datetime', models.DateTimeField()),
                 ('end_datetime', models.DateTimeField()),
                 ('car_type', models.IntegerField()),

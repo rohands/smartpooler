@@ -10,8 +10,10 @@ class RegUsers(models.Model):
 
 class ActivePoolers(models.Model):
 	usn = models.ForeignKey('RegUsers')
-	src = models.DecimalField(decimal_places=5,max_digits=10)
-	dest = models.DecimalField(decimal_places=5,max_digits=10)
+	src_lat = models.DecimalField(decimal_places=5,max_digits=10)
+	src_lng = models.DecimalField(decimal_places=5,max_digits=10)
+	dest_lat = models.DecimalField(decimal_places=5,max_digits=10)
+	dest_lng = models.DecimalField(decimal_places=5,max_digits=10)
 	start_datetime = models.DateTimeField()
 	end_datetime = models.DateTimeField()
 	# 0 for Sedan, 1 for SUV

@@ -6,6 +6,7 @@ from .models import *
 from django.db import IntegrityError
 from django.contrib.auth import authenticate
 from django.utils import timezone
+from . import temp
 # Create your views here.
 
 @csrf_exempt
@@ -60,8 +61,10 @@ def offer_ride(request):
 		usn = request.session.get("usn","0")
 		if usn != "0":
 			user = RegUsers.objects.get(usn=usn)			
-			src = params.get("src")
-			dest = params.get("dest")
+			src_lat = params.get("src_lat")
+			dest_lat = params.get("dest_lat")
+			src_lng = params.get("src_lng")
+			dest_lng = params.get("dest_lng")
 			start_datetime = params.get("start_datetime")
 			end_datetime = params.get("end_datetime")
 			car_type = params.get("car_type")
@@ -83,5 +86,31 @@ def logout(request):
 	del request.session["usn"] 
 	return HttpResponse("Logged out successfully")
 
+@csrf_exempt
 def join_ride(request):
-	#To do
+	if request.session.get("logged_in",false):
+		usn = request.session.get("usn","0")
+		if usn != "0":
+			params = request.POST
+			src = params.get("src")
+			dest = params.get("dest")
+			start_datetime = params.get("start_datetime")
+			end_datetime = params.get("end_datetime")
+			car_type = params.get("car_type")
+			baggage = params.get("baggage")
+			price = params.get("price")
+			all_active = ActivePoolers.objects.all()
+			# deviations = list()
+
+	return HttpResponse("Ride join unsuccessful")
+			# for each_activepooler in all_active:
+			# 	pooler_src = each_activepooler.src
+			# 	pooler_dest = each_activepooler.dest
+			# 	poolee_src = src
+			# 	poolee_dest = dest
+			# 	deviations.append(each_activepooler,temp.distance(pooler_src,pooler_dest,[poolee_src,poolee_dest]))
+			# mini = deviations[0]
+			# for each in deviations:
+			# 	if each[1] < mini[1] : 
+			# 		mini = each
+			# print mini
