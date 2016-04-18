@@ -7,6 +7,7 @@ from django.db import IntegrityError
 from django.contrib.auth import authenticate
 from django.utils import timezone
 from . import temp
+import time
 # Create your views here.
 
 @csrf_exempt
@@ -101,7 +102,6 @@ def join_ride(request):
 			end_datetime = params.get("end_datetime")
 			car_type = params.get("car_type")
 			baggage = params.get("baggage")
-			price = params.get("price")
 			all_active = ActivePoolers.objects.all()
 			deviations = list()
 			for each_activepooler in all_active:
@@ -119,3 +119,9 @@ def join_ride(request):
 			 		mini = each
 	return HttpResponse("Ride join successful")
 			
+@csrf_exempt
+def mobile_apptest(request):
+	params = request.POST
+	print params
+	time.sleep(5)
+	return HttpResponse("POST DATA successful")
