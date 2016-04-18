@@ -12,7 +12,7 @@ from . import temp
 @csrf_exempt
 def signup(request):
 	params = request.POST
-	
+	print params
 	usn = params.get("usn")
 	password = params.get("password")
 	phno = params.get("phno")
@@ -20,6 +20,7 @@ def signup(request):
 	email = params.get("email")
 	first_name = params.get("first_name")
 	last_name  = params.get("last_name")
+	print usn
 	try:
 		user = User.objects.create_user(username=usn,password=password)
 		user.first_name = first_name
@@ -71,7 +72,7 @@ def offer_ride(request):
 			baggage = params.get("baggage")
 			price = params.get("price")
 
-			new_object = ActivePoolers(usn=user,src=src,dest=dest,start_datetime=timezone.now(),
+			new_object = ActivePoolers(usn=user,src_lat=src_lat,dest_lat=dest_lat,src_lng=src_lng,dest_lng=dest_lng,start_datetime=timezone.now(),
 				end_datetime=timezone.now(),car_type=car_type,baggage=baggage,price=price)
 
 			new_object.save()
@@ -88,29 +89,33 @@ def logout(request):
 
 @csrf_exempt
 def join_ride(request):
-	if request.session.get("logged_in",false):
+	if request.session.get("logged_in",False):
 		usn = request.session.get("usn","0")
 		if usn != "0":
 			params = request.POST
-			src = params.get("src")
-			dest = params.get("dest")
+			src_lat = params.get("src_lat")
+			dest_lat = params.get("dest_lat")
+			src_lng = params.get("src_lng")
+			dest_lng = params.get("dest_lng")
 			start_datetime = params.get("start_datetime")
 			end_datetime = params.get("end_datetime")
 			car_type = params.get("car_type")
 			baggage = params.get("baggage")
 			price = params.get("price")
 			all_active = ActivePoolers.objects.all()
-			# deviations = list()
-
-	return HttpResponse("Ride join unsuccessful")
-			# for each_activepooler in all_active:
-			# 	pooler_src = each_activepooler.src
-			# 	pooler_dest = each_activepooler.dest
-			# 	poolee_src = src
-			# 	poolee_dest = dest
-			# 	deviations.append(each_activepooler,temp.distance(pooler_src,pooler_dest,[poolee_src,poolee_dest]))
-			# mini = deviations[0]
-			# for each in deviations:
-			# 	if each[1] < mini[1] : 
-			# 		mini = each
-			# print mini
+			deviations = list()
+			for each_activepooler in all_active:
+			 	pooler_src= each_activepooler.src_lat,each_activepooler.src_lng
+			 	
+			 	pooler_dest = each_activepooler.dest_lat,each_activepooler.dest_lng
+			 	
+			 	poolee_src = src_lat,src_lng 
+			 	poolee_dest = dest_lat,dest_lng
+			 	
+			 	deviations.append([each_activepooler,temp.distance(pooler_src,pooler_dest,[poolee_src,poolee_dest])])
+			mini = deviations[0]
+			for each in deviations:
+			 	if each[1] < mini[1] : 
+			 		mini = each
+	return HttpResponse("Ride join successful")
+			
