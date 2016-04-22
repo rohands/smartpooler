@@ -10,6 +10,9 @@ class RegUsers(models.Model):
 
 class ActivePoolers(models.Model):
 	usn = models.ForeignKey('RegUsers')
+	source = models.CharField(max_length=20)
+	destination = models.CharField(max_length=20)
+	waypoints = models.CharField(max_length=10000)
 	src_lat = models.DecimalField(decimal_places=5,max_digits=10)
 	src_lng = models.DecimalField(decimal_places=5,max_digits=10)
 	dest_lat = models.DecimalField(decimal_places=5,max_digits=10)

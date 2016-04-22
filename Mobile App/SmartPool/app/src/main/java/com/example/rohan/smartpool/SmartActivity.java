@@ -1,45 +1,40 @@
 package com.example.rohan.smartpool;
 
-import android.os.AsyncTask;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.util.Log;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ProgressBar;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLEncoder;
+import static com.example.rohan.smartpool.R.id.btn_test;
+import static com.example.rohan.smartpool.R.id.start;
 
 public class SmartActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    StringBuilder sb;
-    ProgressBar progressBar;
+    public static String MyPREFERENCES = "Preferences";
+    public static final String logIn = "loggedInKey";
+    SharedPreferences sharedPreferences;
+    Button joinRide,offerRide,test;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_smart);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        progressBar = (ProgressBar) findViewById(R.id.pbHeaderProgress);
-        progressBar.setIndeterminate(true);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -47,61 +42,38 @@ public class SmartActivity extends AppCompatActivity
         toggle.syncState();
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        //new PostData().execute("lol");
-    }
-
-    private class PostData extends AsyncTask<String,String,String>
-    {
-
-        BufferedReader reader=null;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            progressBar.setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            String text ="";
-            try {
-
-                String data = URLEncoder.encode("name","UTF-8") + "=" + URLEncoder.encode("Rohan DS","UTF-8");
-                data += "&" + URLEncoder.encode("usn","UTF-8") + "=" + URLEncoder.encode("1PI13CS125","UTF-8");
-                URL url = new URL("http://192.168.1.101:8000/smartpool/mobile_apptest/");
-                Log.e("url",url.toString());
-                URLConnection conn = url.openConnection();
-                conn.setDoOutput(true);
-                OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
-                wr.write( data );
-                wr.flush();
-                text = "";
-                reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                sb = new StringBuilder();
-                String line = null;
-                // Read Server Response
-                while((line = reader.readLine()) != null)
-                {
-                    // Append server response in string
-                    sb.append(line + "\n");
-                }
-                text = sb.toString();
-            } catch (MalformedURLException e1) {
-                e1.printStackTrace();
-            } catch (UnsupportedEncodingException e1) {
-                e1.printStackTrace();
-            } catch (IOException e1) {
-                e1.printStackTrace();
+        joinRide = (Button) findViewById(R.id.btn_join);
+        offerRide = (Button) findViewById(R.id.btn_offer);
+        test = (Button) findViewById(btn_test);
+        test.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(SmartActivity.this,ListRoutesActivity.class));
             }
-            return text;
-        }
+        });
 
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-            Toast.makeText(SmartActivity.this,s,Toast.LENGTH_LONG).show();
-            progressBar.setVisibility(View.GONE);
+        sharedPreferences =  getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+        boolean loggedIn = sharedPreferences.getBoolean(logIn,false);
+        Log.e("LoggedIn",String.valueOf(loggedIn));
+        if(!loggedIn)
+        {
+            Intent intent = new Intent(SmartActivity.this,LoginActivity.class);
+            startActivity(intent);
         }
+        else
+            Toast.makeText(this,"User logged in",Toast.LENGTH_SHORT).show();
+        joinRide.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(SmartActivity.this,JoinActivity.class));
+            }
+        });
+        offerRide.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(SmartActivity.this,OfferActivity.class));
+            }
+        });
     }
 
 
@@ -143,17 +115,13 @@ public class SmartActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camara) {
+        if (id == R.id.nav_profile) {
             // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        } else if (id == R.id.nav_offer) {
 
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.nav_join) {
 
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
+        } else if (id == R.id.nav_settings) {
 
         }
 

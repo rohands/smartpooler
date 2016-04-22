@@ -1,4 +1,5 @@
 import googlemaps, sys, re
+import geocoder
 try:
     import urllib2
 except:
@@ -20,7 +21,7 @@ def distance(src,dest,waypoints=None):
 	pooled_distance =0
 	for i in pooled_legs:
 		pooled_distance += float(i["distance"]["text"].split()[0])
-	return pooled_distance- original_distance
+	return pooled_distance,original_distance
 
 	
 	
