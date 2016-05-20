@@ -6,8 +6,7 @@ except:
     print('Run with python2')
     exit()
     
-api_key = 'fot one key'
-api_key = 'AIzaSyDhFZ_MRtG4Xy1IY5zZMUPnWsg_loYAPnM'
+api_key = 'AIzaSyCrhtfK-7AtsHzHUpm2njNke8TD4M3SpmM'
 
 url='https://maps.googleapis.com/maps/api/geocode/json?address=__HOLDER__&key=%s' %api_key
 

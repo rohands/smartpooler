@@ -72,28 +72,6 @@
                     android:src="@drawable/ic_calendar"/>
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingBottom="16dp"
-                android:paddingTop="10dp"
-                >
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:id="@+id/tvEndDate"
-                    android:paddingRight="10dp"
-                    android:gravity="center_vertical"
-                    android:hint="Click on Icon to select Start Date"/>
-                <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:id="@+id/calendar1"
-                    android:src="@drawable/ic_calendar"/>
-            </LinearLayout>
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -106,20 +84,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/startTimePicker"
-                android:layout_gravity="center_horizontal" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Select End Time"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"
-                android:layout_gravity="center_horizontal"/>
-            <!-- End TimePicker -->
-            <TimePicker
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/endTimePicker"
                 android:layout_gravity="center_horizontal" />
             <!--  Baggage Label -->
             <android.support.design.widget.TextInputLayout
@@ -144,7 +108,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textCapWords"
-                    android:hint="Car Type (0 : SUV, 1 : Sedan)" />
+                    android:hint="Car Type (SUV/Sedan)" />
             </android.support.design.widget.TextInputLayout>
 
             <!--  Baggage Label -->

@@ -37,7 +37,7 @@ import java.util.Calendar;
 
 public class OfferActivity extends AppCompatActivity {
 
-    TimePicker startTime,endTime;
+    TimePicker startTime;
     Button offerRide;
     ProgressDialog dialog;
     int flag = 0;
@@ -47,7 +47,7 @@ public class OfferActivity extends AppCompatActivity {
     TextView startDate,endDate,currentView;
     String startDate_,endDate_;
     int year,month,day;
-    String response;
+    String usn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,15 +61,13 @@ public class OfferActivity extends AppCompatActivity {
         carType = (EditText) findViewById(R.id.input_cartype);
         price = (EditText) findViewById(R.id.input_price);
         startDate = (TextView) findViewById(R.id.tvStartDate);
-        endDate = (TextView) findViewById(R.id.tvEndDate);
         calendar = Calendar.getInstance();
-        calendar1 = (ImageView) findViewById(R.id.calendar1);
         calendar2 = (ImageView) findViewById(R.id.calendar2);
         year = calendar.get(Calendar.YEAR);
         month = calendar.get(Calendar.MONTH);
         day = calendar.get(Calendar.DAY_OF_MONTH);
         final SharedPreferences sharedPreferences = getSharedPreferences(SmartActivity.MyPREFERENCES,MODE_PRIVATE);
-        String usn = sharedPreferences.getString("usn","");
+        usn = sharedPreferences.getString("usn","");
         if(usn.equals(""))
         {
             Toast.makeText(this,"Please login to continue",Toast.LENGTH_SHORT);
@@ -85,26 +83,15 @@ public class OfferActivity extends AppCompatActivity {
 
             }
         });
-        calendar1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                flag = 2;
-                currentView = endDate;
-                setDate(endDate);
-            }
-        });
         startTime = (TimePicker) findViewById(R.id.startTimePicker);
-        endTime = (TimePicker) findViewById(R.id.endTimePicker);
         offerRide = (Button) findViewById(R.id.btn_offerride);
-        calendar1 = (ImageView) findViewById(R.id.calendar1);
         calendar2 = (ImageView) findViewById(R.id.calendar2);
         offerRide.setOnClickListener(new View.OnClickListener() {
             @TargetApi(Build.VERSION_CODES.M)
             @Override
             public void onClick(View v) {
                 String startDateTime = startDate_ + " "+ updateTime(startTime.getCurrentHour(),startTime.getCurrentMinute());
-                String endDateTime = endDate_ + " "+ updateTime(endTime.getCurrentHour(),endTime.getCurrentMinute());
-                new PostData().execute(source.getText().toString(),destination.getText().toString(),startDateTime,endDateTime,baggage.getText().toString()
+                new PostData().execute(source.getText().toString(),destination.getText().toString(),startDateTime,baggage.getText().toString()
                         ,carType.getText().toString(),price.getText().toString(),sharedPreferences.getString("usn",""));
             }
         });
@@ -169,11 +156,10 @@ public class OfferActivity extends AppCompatActivity {
                 String data = URLEncoder.encode("source", "UTF-8") + "=" + params[0];
                 data += "&" + URLEncoder.encode("destination","UTF-8") + "=" + params[1];
                 data += "&" + URLEncoder.encode("startDateTime","UTF-8") + "=" + params[2];
-                data += "&" + URLEncoder.encode("endDateTime","UTF-8") + "=" + params[3];
-                data += "&" + URLEncoder.encode("baggage","UTF-8") + "=" + params[4];
-                data += "&" + URLEncoder.encode("carType","UTF-8") + "=" + params[5];
-                data += "&" + URLEncoder.encode("price","UTF-8") + "=" + params[6];
-                data += "&" + URLEncoder.encode("usn","UTF-8") + "=" +URLEncoder.encode("1PI13CS125","UTF-8") ;
+                data += "&" + URLEncoder.encode("baggage","UTF-8") + "=" + params[3];
+                data += "&" + URLEncoder.encode("carType","UTF-8") + "=" + params[4];
+                data += "&" + URLEncoder.encode("price","UTF-8") + "=" + params[5];
+                data += "&" + URLEncoder.encode("usn","UTF-8") + "=" +URLEncoder.encode(usn,"UTF-8") ;
 
 
                 URL url = new URL( LoginActivity.BASE_URL+ "offer_ride/");

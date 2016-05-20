@@ -12,18 +12,17 @@ class ActivePoolers(models.Model):
 	usn = models.ForeignKey('RegUsers')
 	source = models.CharField(max_length=20)
 	destination = models.CharField(max_length=20)
-	waypoints = models.CharField(max_length=10000)
 	src_lat = models.DecimalField(decimal_places=5,max_digits=10)
 	src_lng = models.DecimalField(decimal_places=5,max_digits=10)
 	dest_lat = models.DecimalField(decimal_places=5,max_digits=10)
 	dest_lng = models.DecimalField(decimal_places=5,max_digits=10)
 	start_datetime = models.DateTimeField()
-	end_datetime = models.DateTimeField()
-	# 0 for Sedan, 1 for SUV
 	car_type = models.IntegerField()
+	waypoints_usn = models.CharField(default="",max_length=10000)
 	baggage = models.DecimalField(decimal_places=2,max_digits=10)
 	price = models.DecimalField(decimal_places=1,max_digits=10)
-
+	filled = models.IntegerField(default=0)
+	filled_names = models.CharField(default="",max_length=10000000)
 	class Meta:
 		unique_together = (("usn","start_datetime"),)
 

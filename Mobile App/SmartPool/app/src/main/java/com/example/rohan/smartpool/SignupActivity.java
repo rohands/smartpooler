@@ -48,10 +48,8 @@ public class SignupActivity extends AppCompatActivity {
         signUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new PostData().execute(firstName.getText().toString(),lastName.getText().toString(),usn.getText().toString(),
-                            phNo.getText().toString(),email.getText().toString(),password.getText().toString());
-                Intent intent = new Intent(SignupActivity.this,LoginActivity.class);
-                startActivity(intent);
+                new PostData().execute(firstName.getText().toString(), lastName.getText().toString(), usn.getText().toString(),
+                        phNo.getText().toString(), email.getText().toString(), password.getText().toString());
             }
         });
     }
@@ -76,6 +74,8 @@ public class SignupActivity extends AppCompatActivity {
                 dialog.dismiss();
             }
             Toast.makeText(SignupActivity.this, s, Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(SignupActivity.this,LoginActivity.class);
+            startActivity(intent);
         }
 
         @Override
@@ -84,19 +84,18 @@ public class SignupActivity extends AppCompatActivity {
             String text ="";
             try {
 
-                /*String data = URLEncoder.encode("fname", "UTF-8") + "=" + params[0];
-                data += "&" + URLEncoder.encode("lname","UTF-8") + "=" + params[1];
+                String data = URLEncoder.encode("first_name", "UTF-8") + "=" + params[0];
+                data += "&" + URLEncoder.encode("last_name","UTF-8") + "=" + params[1];
                 data += "&" + URLEncoder.encode("usn","UTF-8") + "=" + params[2];
                 data += "&" + URLEncoder.encode("phno","UTF-8") + "=" + params[3];
                 data += "&" + URLEncoder.encode("email","UTF-8") + "=" + params[4];
-                data += "&" + URLEncoder.encode("password","UTF-8") + "=" + params[5];*/
-
-                String data = URLEncoder.encode("first_name", "UTF-8") + "=" + URLEncoder.encode("Rohan","UTF-8");
-                data += "&" + URLEncoder.encode("last_name","UTF-8") + "=" + URLEncoder.encode("Doddaiah","UTF-8");
-                data += "&" + URLEncoder.encode("usn","UTF-8") + "=" + "1PI13CS125";
-                data += "&" + URLEncoder.encode("phno","UTF-8") + "=" + "9986180939";
-                data += "&" + URLEncoder.encode("email","UTF-8") + "=" + "rohan0495@gmail.com";
-                data += "&" + URLEncoder.encode("password","UTF-8") + "=" + "madhurima101";
+                data += "&" + URLEncoder.encode("password","UTF-8") + "=" + params[5];
+//                String data = URLEncoder.encode("first_name", "UTF-8") + "=" + URLEncoder.encode("Rohan","UTF-8");
+//                data += "&" + URLEncoder.encode("last_name","UTF-8") + "=" + URLEncoder.encode("Doddaiah","UTF-8");
+//                data += "&" + URLEncoder.encode("usn","UTF-8") + "=" + "1PI13CS125";
+//                data += "&" + URLEncoder.encode("phno","UTF-8") + "=" + "9986180939";
+//                data += "&" + URLEncoder.encode("email","UTF-8") + "=" + "rohan0495@gmail.com";
+//                data += "&" + URLEncoder.encode("password","UTF-8") + "=" + "madhurima101";
 
                 URL url = new URL(LoginActivity.BASE_URL + "signup/");
                 Log.e("url", url.toString());

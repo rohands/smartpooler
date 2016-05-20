@@ -38,14 +38,14 @@ import java.util.Calendar;
 public class JoinActivity extends AppCompatActivity {
 
     int flag,year,month,day;
-    ImageView calendar1,calendar2;
+    ImageView calendar2;
     Calendar calendar;
     EditText source,destination,baggage;
-    String startDate_,endDate_;
-    TimePicker startTime,endTime;
+    String startDate_;
+    TimePicker startTime;
     ProgressDialog dialog;
     Button joinRide;
-    TextView currentView,startDate,endDate;
+    TextView currentView,startDate;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,21 +59,19 @@ public class JoinActivity extends AppCompatActivity {
             Toast.makeText(this, "Please login to continue", Toast.LENGTH_SHORT);
             startActivity(new Intent(JoinActivity.this, LoginActivity.class));
         }
+        Log.e("usn",usn);
 
         source = (EditText) findViewById(R.id.input_src);
         destination = (EditText) findViewById(R.id.input_dest);
         dialog = new ProgressDialog(this);
         baggage = (EditText) findViewById(R.id.input_baggage);
         startDate = (TextView) findViewById(R.id.tvStartDate);
-        endDate = (TextView) findViewById(R.id.tvEndDate);
         calendar = Calendar.getInstance();
-        calendar1 = (ImageView) findViewById(R.id.calendar1);
         calendar2 = (ImageView) findViewById(R.id.calendar2);
         year = calendar.get(Calendar.YEAR);
         joinRide = (Button) findViewById(R.id.btn_joinride);
         month = calendar.get(Calendar.MONTH);
         startTime = (TimePicker) findViewById(R.id.startTimePicker);
-        endTime = (TimePicker) findViewById(R.id.endTimePicker);
         day = calendar.get(Calendar.DAY_OF_MONTH);
 
         calendar2.setOnClickListener(new View.OnClickListener() {
@@ -85,22 +83,12 @@ public class JoinActivity extends AppCompatActivity {
 
             }
         });
-        calendar1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                flag = 2;
-                currentView = endDate;
-                setDate(endDate);
-            }
-        });
-
         joinRide.setOnClickListener(new View.OnClickListener() {
             @TargetApi(Build.VERSION_CODES.M)
             @Override
             public void onClick(View v) {
                 String startDateTime = startDate_ + " " + updateTime(startTime.getCurrentHour(), startTime.getCurrentMinute());
-                String endDateTime = endDate_ + " " + updateTime(endTime.getCurrentHour(), endTime.getCurrentMinute());
-                new PostData().execute(source.getText().toString(), destination.getText().toString(), startDateTime, endDateTime, baggage.getText().toString()
+                new PostData().execute(source.getText().toString(), destination.getText().toString(), startDateTime, baggage.getText().toString()
                         , usn);
             }
         });
@@ -142,9 +130,8 @@ public class JoinActivity extends AppCompatActivity {
                 String data = URLEncoder.encode("source", "UTF-8") + "=" + params[0];
                 data += "&" + URLEncoder.encode("destination","UTF-8") + "=" + params[1];
                 data += "&" + URLEncoder.encode("startDateTime","UTF-8") + "=" + params[2];
-                data += "&" + URLEncoder.encode("endDateTime","UTF-8") + "=" + params[3];
-                data += "&" + URLEncoder.encode("baggage","UTF-8") + "=" + params[4];
-                data += "&" + URLEncoder.encode("usn","UTF-8") + "=" +params[5] ;
+                data += "&" + URLEncoder.encode("baggage","UTF-8") + "=" + params[3];
+                data += "&" + URLEncoder.encode("usn","UTF-8") + "=" +params[4] ;
 
 
                 URL url = new URL(LoginActivity.BASE_URL + "join_ride/");
@@ -206,9 +193,6 @@ public class JoinActivity extends AppCompatActivity {
     private void showDate(int year, int month, int day) {
         if(flag == 1)
             startDate_ = new StringBuilder().append(month).append(" ").append(day).append(" ").append(year).toString();
-        else if(flag == 2)
-            endDate_ = new StringBuilder().append(month).append(" ").append(day).append(" ").append(year).toString();
-
         currentView.setText(new StringBuilder().append(day).append("/")
                 .append(month).append("/").append(year));
     }

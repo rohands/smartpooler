@@ -1,6 +1,10 @@
 package com.example.rohan.smartpool;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -52,7 +56,9 @@ public class ListRoutesActivity extends AppCompatActivity implements
     List<RowItem> rowItems;
     ProgressDialog dialog;
     int clicked_position;
-    String src_lat_,src_lng_,dest_lat_,dest_lng_;
+    String src_lat_,src_lng_,dest_lat_,dest_lng_;NotificationManager manager;
+    Notification myNotication;
+    String usn;
 
 
 
@@ -63,6 +69,12 @@ public class ListRoutesActivity extends AppCompatActivity implements
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         dialog = new ProgressDialog(this);
+        manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        final SharedPreferences sharedPreferences = getSharedPreferences(SmartActivity.MyPREFERENCES,MODE_PRIVATE);
+        usn = sharedPreferences.getString("usn","");
+
+
+
 
         JSONObject jsonObject = null;
         //String s = "{\"1\": {\"lname\": \"Doddaiah\", \"source\": \"Koramangala\", \"destination\": \"Whitefield, Bangalore\", \"fname\": \"Rohan\", \"distance\": 19.7}}";
@@ -135,8 +147,37 @@ public class ListRoutesActivity extends AppCompatActivity implements
                 dialog.dismiss();
             }
             Toast.makeText(ListRoutesActivity.this, s, Toast.LENGTH_LONG).show();
-            String uri = "http://maps.google.com/maps?saddr="+src_lat.get(clicked_position)+","+src_lng.get(clicked_position)+"&daddr="+dest_lat.get(clicked_position)+","+dest_lng.get(clicked_position)+
-                    "+to:"+src_lat_+","+src_lng_+"+to:"+dest_lat_+","+dest_lng_;
+            PendingIntent pending=PendingIntent.getActivity(getApplicationContext(), 0, new Intent(),0);
+            Notification.Builder builder = new Notification.Builder(ListRoutesActivity.this);
+
+            builder.setAutoCancel(false);
+            builder.setTicker("this is ticker text");
+            builder.setContentTitle("Share Update");
+            if(Integer.valueOf(s.charAt(s.length() - 1)) > 0)
+            {
+                if(Integer.valueOf(s.charAt(s.length() - 1)) == 1)
+                {
+                    builder.setContentText("Say HI to your co-passenger " + s.substring(0,s.length()-2));
+                }
+                else
+                {
+                    builder.setContentText("Say HI to your co-passengers " + s.substring(0,s.length()-2));
+                }
+            }
+            else
+                builder.setContentText("Congratulations you have successfully shared a ride!");
+            builder.setSmallIcon(R.drawable.ic_logo);
+            builder.setContentIntent(pending);
+            builder.setOngoing(true);
+            builder.setSubText("Navigate yourself, have fun!");   //API level 16
+            builder.setNumber(100);
+            builder.build();
+
+            myNotication = builder.getNotification();
+            manager.notify(11, myNotication);
+
+            String uri = "http://maps.google.com/maps?saddr="+src_lat.get(clicked_position)+","+src_lng.get(clicked_position)+"&daddr="+src_lat_+","+src_lng_+
+                    "+to:"+dest_lat.get(clicked_position)+","+dest_lng.get(clicked_position);
             Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(uri));
             intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
             startActivity(intent);
@@ -158,6 +199,7 @@ public class ListRoutesActivity extends AppCompatActivity implements
 
                 data += "&" + URLEncoder.encode("dest_lat","UTF-8") + "=" + params[3];
                 data += "&" + URLEncoder.encode("dest_lng","UTF-8") + "=" + params[4];
+                data += "&" + URLEncoder.encode("myUsn","UTF-8") + "=" + params[5];
 
                 URL url = new URL(LoginActivity.BASE_URL + "add_waypoints/");
                 Log.e("url", url.toString());
@@ -194,6 +236,6 @@ public class ListRoutesActivity extends AppCompatActivity implements
         Log.e("position", String.valueOf(position));
         clicked_position = position;
 
-        new PostData().execute(usns.get(position), src_lat_, src_lng_, dest_lat_, dest_lng_);
+        new PostData().execute(usns.get(position), src_lat_, src_lng_, dest_lat_, dest_lng_,usn);
     }
 }

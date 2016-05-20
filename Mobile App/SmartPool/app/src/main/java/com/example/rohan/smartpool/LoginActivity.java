@@ -35,7 +35,7 @@ public class LoginActivity extends AppCompatActivity {
     Button loginButton;
     ProgressDialog dialog;
     SharedPreferences sharedPreferences;
-    public static final String BASE_URL = "http://192.168.43.49:8000/smartpool/";
+    public static final String BASE_URL = "http://192.168.43.49:8080/smartpool/";
     String response;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,7 +95,7 @@ public class LoginActivity extends AppCompatActivity {
             }
             else
             {
-                Toast.makeText(LoginActivity.this,"Please enter the right credentials",Toast.LENGTH_SHORT).show();
+                //Toast.makeText(LoginActivity.this,"Please enter the right credentials",Toast.LENGTH_SHORT).show();
             }
 
         }

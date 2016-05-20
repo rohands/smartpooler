@@ -33,7 +33,7 @@ def signup(request):
 		registered.save()
 	except IntegrityError as e:
 		return HttpResponse("Username exists, please login")
-	return HttpResponse("User successfulcessfully registered")
+	return HttpResponse("User successfully registered, please login with the credentials you provided")
 
 
 def index(request):
@@ -88,25 +88,20 @@ def offer_ride(request):
 		intermediate_str = start_datetimestr[2:]
 		x = month_dict[int(start_datetimestr[0])]
 		start_datetime1 = x + ' ' + intermediate_str
-
-		end_datetimestr = params.get("endDateTime")
-		intermediate_str = end_datetimestr[2:]
-		x = month_dict[int(end_datetimestr[0])]
-		end_datetime1 = x + ' ' + intermediate_str
-
 		car_type = params.get("carType")
+		if car_type == "SUV":
+			car_type = 0
+		else:
+			car_type = 1
+		print "CAR TYPE",car_type
 		baggage = params.get("baggage")
 		price = params.get("price")
 
 
 
 		start_datetime = datetime.strptime(start_datetime1, '%b %d %Y %I:%M%p')
-		end_datetime = datetime.strptime(end_datetime1, '%b %d %Y %I:%M%p')
-		print src_lat,dest_lat,start_datetime
-
 		new_object = ActivePoolers(usn=user,source=source,destination=destination,src_lat=src_lat,dest_lat=dest_lat,src_lng=src_lng,dest_lng=dest_lng,start_datetime=start_datetime,
-			end_datetime=end_datetime,car_type=car_type,baggage=baggage,price=price)
-
+			car_type=car_type,baggage=baggage,price=price)
 		new_object.save()
 		return HttpResponse("Ride successfully offered")
 	else:
@@ -147,54 +142,23 @@ def join_ride(request):
 	intermediate_str = start_datetimestr[2:]
 	x = month_dict[int(start_datetimestr[0])]
 	start_datetime1 = x + ' ' + intermediate_str
-
-	end_datetimestr = params.get("endDateTime")
-	intermediate_str = end_datetimestr[2:]
-	x = month_dict[int(end_datetimestr[0])]
-	end_datetime1 = x + ' ' + intermediate_str
 	baggage = params.get("baggage")
 	start_datetime = datetime.strptime(start_datetime1, '%b %d %Y %I:%M%p')
-	end_datetime = datetime.strptime(end_datetime1, '%b %d %Y %I:%M%p')
-	# print src_lat,src_lng,dest_lng,dest_lat,start_datetime,end_datetime
-	
+	print params
 	all_active = ActivePoolers.objects.all()
 	deviations = list()
 	for each_activepooler in all_active:
 	 	pooler_src= str(each_activepooler.src_lat),str(each_activepooler.src_lng)
 	 	pooler_dest = str(each_activepooler.dest_lat),str(each_activepooler.dest_lng)
 	 	poolee_src = src_lat,src_lng 
-	 	poolee_dest = dest_lat,dest_lng
-
-	 	
-	 	q = each_activepooler.waypoints.split(";")
-	 	print q
-	 	print each_activepooler.waypoints
-
-
-	 	if len(q) != 1 :
-
-	 		for i in range(len(q)):
-	 			if q[i] == '':
-	 				del q[i]
-	 			q[i] = eval(q[i])
-	 		q.append(poolee_src)
-	 		q.append(poolee_dest)
-	 	else:
-	 		q = [poolee_src,poolee_dest]	 	
-
-	 	v = temp.distance(pooler_src,pooler_dest,q)
+	 	poolee_dest = dest_lat,dest_lng	 
+	 	print "Lol"
+	 	v = temp.distance(pooler_src,pooler_dest)
 	 	if (v[0] - v[1]) < 50:
-
 	 		deviations.append([each_activepooler,v])
 	 	else:
 	 		pass
-
 	print deviations
-
-	# mini = deviations[0]
-	# for each in deviations:
-	# #  	if each[1] < mini[1] : 
-	# #  		mini = each
 
 	deviations = sorted(deviations,key=lambda x: x[1][0] - x[1][1])
 	response_str = {}
@@ -202,6 +166,7 @@ def join_ride(request):
 	for each in deviations:
 		x+=1
 		d = dict()
+		user1 = User.objects.get(username=each[0].usn.usn)
 		d['fname'] = user1.first_name
 		d['lname'] = user1.last_name
 		d['source'] = each[0].source
@@ -217,7 +182,7 @@ def join_ride(request):
 		d['poolee_dest_lat'] = str(dest_lat)
 		d['poolee_dest_lng'] = str(dest_lng)
 
-		d['offer_usn'] = str(user1.username)
+		d['offer_usn'] = each[0].usn.usn
 		response_str[x] = d	
 	final = json.dumps(response_str)
 	return HttpResponse(final )
@@ -232,40 +197,18 @@ def mobile_apptest(request):
 def add_waypoints(request):
 	params = request.POST
 	usn = params.get("usn")
+	musn = params.get("myUsn")
+	print usn
+	print musn
 	user = RegUsers.objects.get(usn=usn)
+	userobj = User.objects.get(username=musn)
+	userobj1 = User.objects.get(username=usn)
+	print userobj.first_name
 	active = ActivePoolers.objects.get(usn=user)
-	active.waypoints = active.waypoints +  "(" + params.get('src_lat') + "," + params.get('src_lng') + ")"+";" + "("+ params.get('dest_lat') + "," + params.get('dest_lng') + ");"
+	active.filled = active.filled + 1
+	active.filled_names = active.filled_names + " " + userobj1.first_name
+	names = active.filled_names
+	Lame = str(names) + " " + str(active.filled)
+	print Lame
 	active.save()	
-	return HttpResponse("POST DATA successful")
-
-
-
-# if request.session.get("logged_in",False):
-	# 	usn = request.session.get("usn","0")
-	# 	if usn != "0":
-	# 		params = request.POST
-	# 		src_lat = params.get("src_lat")
-	# 		dest_lat = params.get("dest_lat")
-	# 		src_lng = params.get("src_lng")
-	# 		dest_lng = params.get("dest_lng")
-			
-	# 		start_datetime = params.get("start_datetime")
-	# 		end_datetime = params.get("end_datetime")
-			
-	# 		baggage = params.get("baggage")
-	# 		all_active = ActivePoolers.objects.all()
-	# 		deviations = list()
-	# 		for each_activepooler in all_active:
-	# 		 	pooler_src= each_activepooler.src_lat,each_activepooler.src_lng
-			 	
-	# 		 	pooler_dest = each_activepooler.dest_lat,each_activepooler.dest_lng
-			 	
-	# 		 	poolee_src = src_lat,src_lng 
-	# 		 	poolee_dest = dest_lat,dest_lng
-			 	
-	# 		 	deviations.append([each_activepooler,temp.distance(pooler_src,pooler_dest,[poolee_src,poolee_dest])])
-	# 		mini = deviations[0]
-	# 		for each in deviations:
-	# 		 	if each[1] < mini[1] : 
-	# 		 		mini = each
-	# return HttpResponse("Ride join successful")
+	return HttpResponse(str(Lame))

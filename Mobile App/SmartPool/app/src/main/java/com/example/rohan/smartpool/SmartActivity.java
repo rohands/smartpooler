@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import static com.example.rohan.smartpool.R.id.btn_test;
@@ -27,6 +28,7 @@ public class SmartActivity extends AppCompatActivity
     public static final String logIn = "loggedInKey";
     SharedPreferences sharedPreferences;
     Button joinRide,offerRide,test;
+    RelativeLayout mainLayout;
 
 
     @Override
@@ -43,6 +45,7 @@ public class SmartActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         joinRide = (Button) findViewById(R.id.btn_join);
+        mainLayout = (RelativeLayout) findViewById(R.id.main);
         offerRide = (Button) findViewById(R.id.btn_offer);
         test = (Button) findViewById(btn_test);
         test.setOnClickListener(new View.OnClickListener() {
@@ -51,17 +54,15 @@ public class SmartActivity extends AppCompatActivity
                 startActivity(new Intent(SmartActivity.this,ListRoutesActivity.class));
             }
         });
+        //mainLayout.setBackground();
 
         sharedPreferences =  getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
         boolean loggedIn = sharedPreferences.getBoolean(logIn,false);
         Log.e("LoggedIn",String.valueOf(loggedIn));
-        if(!loggedIn)
-        {
-            Intent intent = new Intent(SmartActivity.this,LoginActivity.class);
+        if(!loggedIn) {
+            Intent intent = new Intent(SmartActivity.this, LoginActivity.class);
             startActivity(intent);
         }
-        else
-            Toast.makeText(this,"User logged in",Toast.LENGTH_SHORT).show();
         joinRide.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -118,8 +119,10 @@ public class SmartActivity extends AppCompatActivity
         if (id == R.id.nav_profile) {
             // Handle the camera action
         } else if (id == R.id.nav_offer) {
+            startActivity(new Intent(SmartActivity.this,OfferActivity.class));
 
         } else if (id == R.id.nav_join) {
+            startActivity(new Intent(SmartActivity.this,JoinActivity.class));
 
         } else if (id == R.id.nav_settings) {
 
